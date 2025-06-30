@@ -13,6 +13,7 @@ import com.comicstore.comiccollectorsystem.modelo.Libro;
 import com.comicstore.comiccollectorsystem.modelo.NovelaGrafica;
 import com.comicstore.comiccollectorsystem.modelo.Usuario;
 import com.comicstore.comiccollectorsystem.util.ArchivoHelper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -54,44 +57,57 @@ public class SistemaGestion {
         cargarUsuariosDesdeTXT();
     }
 
-    private void cargarComicsDesdeCSV() {
-        List<Libro> libros = ArchivoHelper.leerCSV("data/libros.csv");
+private void cargarComicsDesdeCSV() {
+    try {
+        List<Libro> libros = ArchivoHelper.leerCSV("libros.csv");
         for (Libro libro : libros) {
             inventario.add(libro);
             librosPorISBN.put(libro.getIsbn(), libro);
-
             librosPorTitulo.computeIfAbsent(libro.getTitulo(), k -> new ArrayList<>()).add(libro);
             editorialesDisponibles.add(libro.getEditorial());
 
-            if (libro instanceof Comic) {
-                Comic c = (Comic) libro;
-                if (c.getUniverso() != null && !c.getUniverso().isEmpty()) {
-                    universosDisponibles.add(c.getUniverso());
-                }
+            if (libro instanceof Comic c && c.getUniverso() != null && !c.getUniverso().isEmpty()) {
+                universosDisponibles.add(c.getUniverso());
             }
         }
+    } catch (IOException e) {
+        System.err.println("Error al cargar libros desde CSV: " + e.getMessage());
     }
+}
 
-    private void cargarUsuariosDesdeTXT() {
-        List<Usuario> listaUsuarios = ArchivoHelper.leerUsuariosTXT("data/usuarios.txt");
+private void cargarUsuariosDesdeTXT() {
+    try {
+        List<Usuario> listaUsuarios = ArchivoHelper.leerUsuariosTXT("usuarios.txt");
         for (Usuario u : listaUsuarios) {
             usuarios.put(u.getRut(), u);
         }
+    } catch (IOException e) {
+        System.err.println("Error al cargar usuarios desde TXT: " + e.getMessage());
     }
+}
+
 
     public void guardarDatos() {
         guardarUsuariosEnTXT();
     }
 
-    private void guardarUsuariosEnTXT() {
-        ArchivoHelper.escribirUsuarioTXT("data/usuarios.txt", new ArrayList<>(usuarios.values()));
+private void guardarUsuariosEnTXT() {
+    for (Usuario u : usuarios.values()) {
+        try {
+            ArchivoHelper.escribirUsuarioTXT("usuarios.txt", u);
+        } catch (IOException e) {
+            System.err.println("Error al guardar usuario " + u.getRut() + ": " + e.getMessage());
+        }
     }
+}
 
-    public void agregarUsuario(String idUsuario, String nombre, String contrasena) {
-        Usuario nuevo = new Usuario(idUsuario, nombre, contrasena);
-        usuarios.put(idUsuario, nuevo);
-    }
-
+   // public void agregarUsuario(String idUsuario, String nombre, String contrasena) {
+     //   Usuario nuevo = new Usuario(idUsuario, nombre, contrasena);
+     //   usuarios.put(idUsuario, nuevo);
+    //}
+public void agregarUsuario(Usuario usuario) {
+    usuarios.put(usuario.getRut(), usuario);
+}
     public Usuario buscarUsuario(String idUsuario) throws UsuarioNoEncontradoException {
         if (!usuarios.containsKey(idUsuario)) {
             throw new UsuarioNoEncontradoException("Usuario con RUT " + idUsuario + " no encontrado.");
@@ -174,5 +190,18 @@ public List<Libro> listarComprasUsuario(String idUsuario) throws UsuarioNoEncont
     return usuario.getLibrosComprados();
 }
 
+    public List<Comic> buscarComicsPorUniverso(String universo) {
+    return inventario.stream()
+            .filter(libro -> libro instanceof Comic)
+            .map(libro -> (Comic) libro)
+            .filter(comic -> comic.getUniverso().equalsIgnoreCase(universo))
+            .collect(Collectors.toList());
+}
+    
+    public List<Libro> buscarLibrosPorGenero(String genero) {
+    return inventario.stream()
+            .filter(libro -> libro.getEditorial().equalsIgnoreCase(genero)) // Solo si no tienes un campo "género"
+            .collect(Collectors.toList());
+}
     
 }  

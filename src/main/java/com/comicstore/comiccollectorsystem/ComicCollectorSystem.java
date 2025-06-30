@@ -3,6 +3,7 @@
  */
 
 package com.comicstore.comiccollectorsystem;
+import com.comicstore.comiccollectorsystem.vista.MenuConsola;
 
 /**
  *
@@ -11,6 +12,7 @@ package com.comicstore.comiccollectorsystem;
 public class ComicCollectorSystem {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        MenuConsola menu = new MenuConsola();
+        menu.mostrarMenu();
     }
 }
