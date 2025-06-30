@@ -69,8 +69,6 @@ public abstract class Libro {
         this.stock = stock;
     }
     
-    
-    
     @Override
     public String toString() {
         return String.format("%s - %s (%d) [ISBN: %s] - Editorial: %s - Precio: $%.2f - Stock: %d",

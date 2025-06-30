@@ -28,17 +28,21 @@ public class ArchivoHelper {
         
         //try (CSVReader reader = new CSVReader(new FileReader(ruta))) {
         try (BufferedReader br = new BufferedReader(new FileReader(rutaCompleta))) {
- String linea;
+            
+            String linea;
+          
         boolean esPrimera = true;
 
         while ((linea = br.readLine()) != null) {
+              
             if (esPrimera) {
                 esPrimera = false;
+                
                 continue;
             }
-
+            
             String[] partes = linea.split(",", -1); // -1 para incluir campos vacíos
-            if (partes.length >= 12) {
+            if (partes.length >= 8) {
                 String tipo = partes[0];
                 String titulo = partes[1];
                 String autor = partes[2];
@@ -47,20 +51,25 @@ public class ArchivoHelper {
                 String editorial = partes[5];
                 double precio = Double.parseDouble(partes[6]);
                 int stock = Integer.parseInt(partes[7]);
-
-                switch (tipo) {
-                    case "Comic":
+                
+                switch (tipo.trim().toLowerCase()) {
+                    
+                                      
+                    case "comic":
+                        System.out.println("Leyendo: " + titulo);
                         int numeroEdicion = Integer.parseInt(partes[8]);
                         String universo = partes[9];
                         datos.add(new Comic(titulo, autor, anio, isbn, editorial, precio, stock, numeroEdicion, universo));
                         break;
 
-                    case "Novela Gráfica":
-                        String ilustrador = partes[11];
+                    case "novela grafica":
+                        System.out.println("Leyendo: " + titulo);
+                        String ilustrador = partes.length > 10 ? partes[10] : "";
                         datos.add(new NovelaGrafica(titulo, autor, anio, isbn, editorial, precio, stock, ilustrador));
                         break;
 
-                    case "Libro":
+                    case "libro":
+                        System.out.println("Leyendo: " + titulo);
                         datos.add(new LibroGenerico(titulo, autor, anio, isbn, editorial, precio, stock));
                         break;
 

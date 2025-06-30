@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
  * @author Andrea
  */
 public class SistemaGestion {
+    
+           
    private List<Libro> inventario; // Lista general para todos los libros
     private Map<String, Usuario> usuarios; // clave: RUT
     private Map<String, Libro> librosPorISBN; // clave: ISBN
@@ -50,15 +52,20 @@ public class SistemaGestion {
         generosDisponibles = new HashSet<>();
         editorialesDisponibles = new HashSet<>();
         universosDisponibles = new HashSet<>();
+        
     }
 
     public void cargarDatosIniciales() {
-        cargarComicsDesdeCSV();
+        
+        cargarInventarioDesdeCSV();
         cargarUsuariosDesdeTXT();
+       
     }
 
-private void cargarComicsDesdeCSV() {
+private void cargarInventarioDesdeCSV() {
+    
     try {
+        
         List<Libro> libros = ArchivoHelper.leerCSV("libros.csv");
         for (Libro libro : libros) {
             inventario.add(libro);
@@ -162,12 +169,22 @@ public void agregarUsuario(Usuario usuario) {
     }
 
     public Set<Libro> obtenerLibrosOrdenadosPorTitulo() {
-        return new TreeSet<>(Comparator.comparing(Libro::getTitulo));
-    }
+       return inventario.stream()
+               .collect(Collectors.toCollection(() ->
+                   new TreeSet<>(Comparator.comparing(Libro::getTitulo, String.CASE_INSENSITIVE_ORDER))
+               ));
+   }
 
-    public Set<Libro> obtenerLibrosOrdenadosPorAutor() {
-        return new TreeSet<>(Comparator.comparing(Libro::getAutor));
-    }
+public Set<Libro> obtenerLibrosOrdenadosPorAutor() {
+    return inventario.stream()
+            .collect(Collectors.toCollection(() ->
+                new TreeSet<>(
+                    Comparator.comparing(Libro::getAutor, String.CASE_INSENSITIVE_ORDER)
+                              .thenComparing(Libro::getTitulo, String.CASE_INSENSITIVE_ORDER)
+                              .thenComparing(Libro::getIsbn)
+                )
+            ));
+}
 
     public Set<Comic> obtenerComicsOrdenadosPorUniverso() {
         return inventario.stream()
@@ -203,5 +220,11 @@ public List<Libro> listarComprasUsuario(String idUsuario) throws UsuarioNoEncont
             .filter(libro -> libro.getEditorial().equalsIgnoreCase(genero)) // Solo si no tienes un campo "género"
             .collect(Collectors.toList());
 }
+    
+    public Map<String, Usuario> getUsuarios() {
+    return usuarios;
+}
+    
+    
     
 }  
