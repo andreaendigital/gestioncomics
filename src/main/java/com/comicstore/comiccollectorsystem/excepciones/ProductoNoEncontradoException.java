@@ -9,5 +9,7 @@ package com.comicstore.comiccollectorsystem.excepciones;
  * @author Andrea
  */
 public class ProductoNoEncontradoException extends Exception {
-    
+    public ProductoNoEncontradoException(String mensaje) {
+        super(mensaje);
+    }
 }

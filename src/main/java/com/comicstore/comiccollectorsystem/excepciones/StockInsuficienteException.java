@@ -9,5 +9,7 @@ package com.comicstore.comiccollectorsystem.excepciones;
  * @author Andrea
  */
 public class StockInsuficienteException extends Exception {
-    
+    public StockInsuficienteException(String mensaje) {
+        super(mensaje);
+    }
 }
