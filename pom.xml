@@ -9,5 +9,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>com.comicstore.comiccollectorsystem.ComicCollectorSystem</exec.mainClass>
+        
     </properties>
+<dependencies>
+        <dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>5.7.1</version>
+    </dependency>
+</dependencies>
 </project>
