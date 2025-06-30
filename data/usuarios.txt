@@ -1,0 +1,6 @@
+rut,nombre,correo
+12345678-9,Andrea,andrea@email.com
+98765432-1,Carlos,carlos@email.com
+11222333-4,Lucía,lucia@email.com
+
+17176687-7,Valeria,valeria@email.com

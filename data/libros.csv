@@ -1,0 +1,10 @@
+Tipo,Titulo,Autor,AñoPublicacion,ISBN,Editorial,Precio,Stock,NumeroEdicion,Universo,Ilustrador
+Comic,Spider-Man,Stan Lee,1962,9781234567890,Marvel,12.99,10,1,Marvel,
+Comic,Batman,Bob Kane,1939,9789876543210,DC Comics,10.50,5,3,DC,
+Comic,X-Men,Chris Claremont,1980,9781111111111,Marvel,11.75,7,2,Marvel,
+Novela Grafica,Watchmen,Alan Moore,1987,9782222222222,DC Comics,15.50,4,,,Dave Gibbons
+Novela Grafica,Maus,Art Spiegelman,1991,9783333333333,Random House,13.75,6,,,Art Spiegelman
+Novela Grafica,Persepolis,Marjane Satrapi,2000,9784444444444,Pantheon,14.00,3,,,Marjane Satrapi
+Libro,1984,George Orwell,1949,9780451524935,Secker & Warburg,9.99,8,,,
+Libro,Fahrenheit 451,Ray Bradbury,1953,9780006546061,Ballantine Books,8.50,5,,,
+Libro,El Principito,Antoine de Saint-Exupéry,1943,9780156012195,Reynal & Hitchcock,7.25,10,,,
