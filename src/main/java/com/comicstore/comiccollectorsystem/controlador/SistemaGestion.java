@@ -168,4 +168,11 @@ public class SistemaGestion {
                 .sorted(Comparator.comparing(NovelaGrafica::getIlustrador))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
+    
+public List<Libro> listarComprasUsuario(String idUsuario) throws UsuarioNoEncontradoException {
+    Usuario usuario = buscarUsuario(idUsuario);
+    return usuario.getLibrosComprados();
+}
+
+    
 }  

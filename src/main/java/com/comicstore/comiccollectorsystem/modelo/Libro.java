@@ -57,6 +57,20 @@ public abstract class Libro {
 
     public abstract String getTipo();
 
+    public void setEditorial(String editorial) {
+        this.editorial = editorial;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+    
+    
+    
     @Override
     public String toString() {
         return String.format("%s - %s (%d) [ISBN: %s] - Editorial: %s - Precio: $%.2f - Stock: %d",
