@@ -38,6 +38,25 @@ Desarrolla bloques ‘try/catch’ para gestionar errores y validar reglas de ne
 
 ## Visuales :mage_woman:
 
+Esquema de archivos / paquetes
+
+![Captura de pantalla 2025-06-30 210916](https://github.com/user-attachments/assets/fb1c2263-bb5b-4efa-90cc-40826e603401)
+
+Menu
+
+![Captura de pantalla 2025-06-30 212849](https://github.com/user-attachments/assets/88d76852-4b57-4369-87f0-42cd6c1541ad)
+
+Listado de catalogo completo
+
+![Captura de pantalla 2025-06-30 212932](https://github.com/user-attachments/assets/d62b4872-09ad-4314-bd36-abd544958bc6)
+
+Listar novelas graficas por ilustrador
+
+![Captura de pantalla 2025-06-30 212921](https://github.com/user-attachments/assets/226012bf-bb27-4ffd-9db1-aeb11737b175)
+
+Busqueda de comic por universo 
+
+![Captura de pantalla 2025-06-30 212927](https://github.com/user-attachments/assets/803f9e44-cb34-48ee-91f5-1fbb1a650c09)
 
 Registro de Compra:
 
@@ -51,15 +70,9 @@ Creando usuario:
 
 ![Captura de pantalla 2025-06-30 202616](https://github.com/user-attachments/assets/2a715984-b9fb-4933-9969-f5df58fdc537)
 
-Esquema de archivos / paquetes
-
-![Captura de pantalla 2025-06-30 210916](https://github.com/user-attachments/assets/fb1c2263-bb5b-4efa-90cc-40826e603401)
-
-
 Persistencia de usuario creado: 
 
 ![Captura de pantalla 2025-06-30 202628](https://github.com/user-attachments/assets/1664cdeb-8bbe-40b3-9847-290afb742f08)
-
 
 Manejo de error al eliminar usuario: 
 
