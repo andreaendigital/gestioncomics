@@ -10,6 +10,7 @@ import com.comicstore.comiccollectorsystem.excepciones.StockInsuficienteExceptio
 import com.comicstore.comiccollectorsystem.excepciones.UsuarioNoEncontradoException;
 import com.comicstore.comiccollectorsystem.modelo.Comic;
 import com.comicstore.comiccollectorsystem.modelo.Libro;
+import com.comicstore.comiccollectorsystem.modelo.LibroGenerico;
 import com.comicstore.comiccollectorsystem.modelo.NovelaGrafica;
 import com.comicstore.comiccollectorsystem.modelo.Usuario;
 import com.comicstore.comiccollectorsystem.util.ArchivoHelper;
@@ -38,8 +39,8 @@ public class SistemaGestion {
     private Map<String, Usuario> usuarios; // clave: RUT
     private Map<String, Libro> librosPorISBN; // clave: ISBN
     private Map<String, List<Libro>> librosPorTitulo; // clave: Título
-
-    private Set<String> generosDisponibles;
+    private Map<String, List<Libro>> compras = new HashMap<>();
+   
     private Set<String> editorialesDisponibles;
     private Set<String> universosDisponibles; // Solo para Comics
 
@@ -48,8 +49,6 @@ public class SistemaGestion {
         usuarios = new HashMap<>();
         librosPorISBN = new HashMap<>();
         librosPorTitulo = new HashMap<>();
-
-        generosDisponibles = new HashSet<>();
         editorialesDisponibles = new HashSet<>();
         universosDisponibles = new HashSet<>();
         
@@ -59,7 +58,12 @@ public class SistemaGestion {
         
         cargarInventarioDesdeCSV();
         cargarUsuariosDesdeTXT();
-       
+        
+       // Inicializar lista de compras para cada usuario
+    for (Usuario usuario : usuarios.values()) {
+        compras.put(usuario.getRut(), new ArrayList<>());
+    }
+
     }
 
 private void cargarInventarioDesdeCSV() {
@@ -108,10 +112,7 @@ private void guardarUsuariosEnTXT() {
     }
 }
 
-   // public void agregarUsuario(String idUsuario, String nombre, String contrasena) {
-     //   Usuario nuevo = new Usuario(idUsuario, nombre, contrasena);
-     //   usuarios.put(idUsuario, nuevo);
-    //}
+
 public void agregarUsuario(Usuario usuario) {
     usuarios.put(usuario.getRut(), usuario);
 }
@@ -144,17 +145,35 @@ public void agregarUsuario(Usuario usuario) {
         return librosPorTitulo.getOrDefault(titulo, new ArrayList<>());
     }
 
-    public void registrarCompra(String idUsuario, String isbnLibro) throws UsuarioNoEncontradoException, ProductoNoEncontradoException, StockInsuficienteException {
-        Usuario u = buscarUsuario(idUsuario);
+ 
+
+    public void registrarCompra(String rut, String isbnLibro, int cantidad) throws UsuarioNoEncontradoException, ProductoNoEncontradoException, StockInsuficienteException {
+        Usuario u = buscarUsuario(rut);
         Libro libro = buscarLibroPorISBN(isbnLibro);
 
-        if (libro.getStock() <= 0) {
-            throw new StockInsuficienteException("No hay stock disponible para este libro.");
+        if (libro.getStock() < cantidad) {
+            throw new StockInsuficienteException("Stock insuficiente. Solo hay " + libro.getStock() + " unidades disponibles.");
+        }
+        //Descontar Stock
+        libro.setStock(libro.getStock() - cantidad);
+        
+        // Registrar la compra en memoria
+        List<Libro> comprasUsuario = compras.get(rut);
+        if (comprasUsuario == null) {
+            comprasUsuario = new ArrayList<>();
+            compras.put(rut, comprasUsuario);
         }
 
-        libro.setStock(libro.getStock() - 1);
-        u.getLibrosComprados().add(libro);
+        for (int i = 0; i < cantidad; i++) {
+            comprasUsuario.add(libro);
+        }
     }
+
+
+
+
+
+    
 
     public Set<String> getUniversosDisponibles() {
         return universosDisponibles;
@@ -164,9 +183,12 @@ public void agregarUsuario(Usuario usuario) {
         return editorialesDisponibles;
     }
 
-    public Set<String> getGenerosDisponibles() {
-        return generosDisponibles;
-    }
+ public List<Libro> buscarLibrosPorAutor(String autorBuscado) {
+    return inventario.stream()
+            .filter(libro -> libro.getAutor() != null &&
+                             libro.getAutor().equalsIgnoreCase(autorBuscado))
+            .toList();
+}
 
     public Set<Libro> obtenerLibrosOrdenadosPorTitulo() {
        return inventario.stream()
@@ -202,11 +224,19 @@ public Set<Libro> obtenerLibrosOrdenadosPorAutor() {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
     
-public List<Libro> listarComprasUsuario(String idUsuario) throws UsuarioNoEncontradoException {
-    Usuario usuario = buscarUsuario(idUsuario);
-    return usuario.getLibrosComprados();
-}
+//public List<Libro> listarComprasUsuario(String idUsuario) throws UsuarioNoEncontradoException {
+//    Usuario usuario = buscarUsuario(idUsuario);
+//    return usuario.getLibrosComprados();
+//}
 
+    public List<Libro> listarComprasUsuario(String rut) {
+        return compras.getOrDefault(rut, new ArrayList<>());
+    }
+    
+    public void agregarMapaComprasParaUsuario(String rut) {
+    compras.put(rut, new ArrayList<>());
+}
+    
     public List<Comic> buscarComicsPorUniverso(String universo) {
     return inventario.stream()
             .filter(libro -> libro instanceof Comic)
@@ -215,16 +245,24 @@ public List<Libro> listarComprasUsuario(String idUsuario) throws UsuarioNoEncont
             .collect(Collectors.toList());
 }
     
-    public List<Libro> buscarLibrosPorGenero(String genero) {
+public Set<String> getAutoresDisponibles() {
     return inventario.stream()
-            .filter(libro -> libro.getEditorial().equalsIgnoreCase(genero)) // Solo si no tienes un campo "género"
-            .collect(Collectors.toList());
+            .map(Libro::getAutor)
+            .filter(autor -> autor != null && !autor.isBlank())
+            .collect(Collectors.toCollection(() -> new TreeSet<>(String.CASE_INSENSITIVE_ORDER)));
 }
     
     public Map<String, Usuario> getUsuarios() {
     return usuarios;
 }
     
-    
+    public List<Libro> obtenerLibrosGenericosOrdenados(){
+        return inventario.stream()
+                .filter(libro -> libro instanceof LibroGenerico &&
+                !(libro instanceof Comic) &&
+                        !(libro instanceof NovelaGrafica))
+                .sorted(Comparator.comparing(Libro::getTitulo, String.CASE_INSENSITIVE_ORDER))
+                .toList();
+    }
     
 }  

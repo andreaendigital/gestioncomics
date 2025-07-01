@@ -35,6 +35,7 @@ public class Usuario {
     public String getCorreo() {
         return correo;
     }
+    /*
 public List<Libro> getLibrosComprados() {
         return librosComprados;
     }
@@ -42,7 +43,7 @@ public List<Libro> getLibrosComprados() {
     public void agregarLibroComprado(Libro libro) {
         librosComprados.add(libro);
     }
-
+*/
 
     @Override
     public String toString() {

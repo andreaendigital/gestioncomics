@@ -4,3 +4,4 @@ rut,nombre,correo
 11222333-4,Lucía,lucia@email.com
 
 17176687-7,Valeria,valeria@email.com
+7893462-k,veronica,veronica@email.com
